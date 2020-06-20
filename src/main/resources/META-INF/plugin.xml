@@ -1,0 +1,25 @@
+<idea-plugin>
+    <id>org.cafeboy.idea.plugin.codeit</id>
+    <name>Codeit</name>
+    <vendor email="474868678@qq.com" url="https://www.cafeboy.org">cafeboy</vendor>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <toolWindow id="Codeit" icon="/icons/logo_13x13.png" anchor="bottom"
+                    canCloseContents="true"
+                    factoryClass="org.cafeboy.idea.plugin.codeit.ui.CodeitToolWindowFactory"/>
+        <projectService
+                serviceImplementation="org.cafeboy.idea.plugin.codeit.core.history.HistoryService"/>
+        <projectConfigurable instance="org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable"
+                             id="preferences.history"/>
+        <projectService serviceImplementation="org.cafeboy.idea.plugin.codeit.ui.CodeitView"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
