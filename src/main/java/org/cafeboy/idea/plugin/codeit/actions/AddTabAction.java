@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
-import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
+import org.cafeboy.idea.plugin.codeit.ui.CodeitManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,6 +22,6 @@ public class AddTabAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-        CodeitView.getInstance(myProject).add();
+        CodeitManager.getInstance(myProject).add();
     }
 }

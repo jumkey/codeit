@@ -1,6 +1,5 @@
 package org.cafeboy.idea.plugin.codeit.actions;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -13,7 +12,8 @@ import com.intellij.openapi.vfs.VirtualFileWrapper;
 import org.cafeboy.idea.plugin.codeit.core.tasks.SavingImageTask;
 import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
 import org.cafeboy.idea.plugin.codeit.ext.Utils;
-import org.cafeboy.idea.plugin.codeit.ui.CodeitContent;
+import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -22,23 +22,24 @@ import javax.swing.*;
  */
 public class SaveAction extends AnAction {
 
-    private final CodeitContent codeitContent;
+    @Override
+    public void update(@NotNull final AnActionEvent e) {
+        // Get required data keys
+        final Project project = e.getProject();
+        final CodeitView codeitView = (CodeitView) e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
 
-    public SaveAction(CodeitContent codeitContent) {
-        super(I18nSupport.i18n_str("action.save.text"), I18nSupport.i18n_str("action.save.description"), AllIcons.Actions.Menu_saveall);
-        this.codeitContent = codeitContent;
+        // Set visibility only in case of existing project and icon
+        e.getPresentation().setEnabled(project != null && codeitView != null && codeitView.getContentWidget().getCode() != null);
     }
 
     @Override
-    public void actionPerformed(AnActionEvent anActionEvent) {
-        final Project project = PlatformDataKeys.PROJECT.getData(anActionEvent.getDataContext());
-        final Icon icon = codeitContent.getContentWidget().getCode();
-        if (project == null || icon == null) {
-            return;
-        }
+    public void actionPerformed(AnActionEvent e) {
+        final Project project = e.getRequiredData(PlatformDataKeys.PROJECT);
+        final CodeitView codeitView = (CodeitView) e.getRequiredData(PlatformDataKeys.CONTEXT_COMPONENT);
+        final Icon icon = codeitView.getContentWidget().getCode();
         FileSaverDialog dialog = FileChooserFactory.getInstance()
                 .createSaveFileDialog(new FileSaverDescriptor(I18nSupport.i18n_str("dialog.save.title"),
-                        I18nSupport.i18n_str("dialog.save.description"), "png"), codeitContent);
+                        I18nSupport.i18n_str("dialog.save.description"), "png"), project);
         VirtualFileWrapper wrapper = dialog.save(ProjectUtil.guessProjectDir(project), Utils.getSuggestFileName());
         if (wrapper == null) {
             return;

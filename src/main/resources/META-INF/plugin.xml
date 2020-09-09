@@ -16,10 +16,36 @@
                 serviceImplementation="org.cafeboy.idea.plugin.codeit.core.history.HistoryService"/>
         <projectConfigurable instance="org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable"
                              id="preferences.history"/>
-        <projectService serviceImplementation="org.cafeboy.idea.plugin.codeit.ui.CodeitView"/>
+        <projectService serviceImplementation="org.cafeboy.idea.plugin.codeit.ui.CodeitManager"/>
     </extensions>
 
+    <resource-bundle>messages.Codeit</resource-bundle>
     <actions>
         <!-- Add your actions here -->
+        <action id="generate" class="org.cafeboy.idea.plugin.codeit.actions.GenQrAction" icon="/icons/logo_13x13.png"
+                description="Generate qr code">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+        <action id="paste" class="org.cafeboy.idea.plugin.codeit.actions.PasteAction" use-shortcut-of="$Paste" icon="AllIcons.Actions.Menu_paste"/>
+        <group id="my.pop.edit">
+            <reference ref="EditorCut"/>
+            <reference ref="EditorCopy"/>
+<!--            <reference ref="EditorPaste"/>-->
+            <reference ref="paste"/>
+            <separator/>
+            <reference ref="EditorDeleteLine"/>
+        </group>
+        <group id="my.pop.qr">
+            <action id="save" class="org.cafeboy.idea.plugin.codeit.actions.SaveAction" icon="AllIcons.Actions.Menu_saveall"/>
+            <action id="copy" class="org.cafeboy.idea.plugin.codeit.actions.CopyAction" icon="AllIcons.Actions.Copy"/>
+        </group>
+        <group id="my.toolbar">
+            <action id="execute" class="org.cafeboy.idea.plugin.codeit.actions.ExecAction"
+                    icon="AllIcons.Actions.Execute"/>
+            <action id="read.qr" class="org.cafeboy.idea.plugin.codeit.actions.ReadQrAction"
+                    icon="AllIcons.Actions.ShowCode"/>
+            <action id="using.cli.im" class="org.cafeboy.idea.plugin.codeit.actions.EnableCliAction"
+                    icon="AllIcons.Actions.SetDefault"/>
+        </group>
     </actions>
 </idea-plugin>

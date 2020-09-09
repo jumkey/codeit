@@ -1,107 +1,88 @@
 package org.cafeboy.idea.plugin.codeit.ui;
 
-import com.google.common.collect.Sets;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
-import com.intellij.openapi.wm.ex.ToolWindowManagerListener;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
-import org.cafeboy.idea.plugin.codeit.actions.*;
-import org.cafeboy.idea.plugin.codeit.ext.Constant;
+import org.apache.http.util.TextUtils;
+import org.cafeboy.idea.plugin.codeit.actions.DeleteAction;
+import org.cafeboy.idea.plugin.codeit.actions.ShowAction;
+import org.cafeboy.idea.plugin.codeit.callback.OnExecuteListener;
+import org.cafeboy.idea.plugin.codeit.core.tasks.CodeGenerateTask;
 import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.Set;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jumkey
  */
-public class CodeitView {
-    private static final Logger LOG = Logger.getInstance(CodeitView.class);
+public class CodeitView extends JPanel {
 
-    private ToolWindow myToolWindow;
-    private final Project myProject;
-    public static final String TAB_SUGGESTED_NAME = I18nSupport.i18n_str("tab.name");
+    /**
+     * main first add
+     */
+    private final ContentWidget contentWidget;
+    private final HistoryWidget historyWidget;
 
     public CodeitView(Project project) {
-        this.myProject = project;
+        super(new BorderLayout());
+        historyWidget = new HistoryWidget(project, this);
+        this.add(historyWidget.historyPanel, BorderLayout.EAST);
+        contentWidget = new ContentWidget(project, this);
+        this.add(contentWidget.mContent, BorderLayout.CENTER);
     }
 
-    public static CodeitView getInstance(@NotNull Project project) {
-        return project.getService(CodeitView.class);
+    public ContentWidget getContentWidget() {
+        return contentWidget;
     }
 
-    public void init(ToolWindowEx toolWindow) {
-        if (myToolWindow != null) {
-            LOG.error("Codeit tool window already initialized");
+    public HistoryWidget getHistoryWidget() {
+        return historyWidget;
+    }
+
+    public AnAction @NotNull[] createHistoryActions() {
+        List<AnAction> historyActions = new ArrayList<>();
+        historyActions.add(new ShowAction(this));
+        historyActions.add(new DeleteAction(this));
+        return historyActions.toArray(AnAction.EMPTY_ARRAY);
+    }
+
+    public void gen(Project project) {
+        ContentWidget contentWidget = this.getContentWidget();
+        String text = contentWidget.getText();
+        if (TextUtils.isEmpty(text)) {
+            contentWidget.setInfo(I18nSupport.i18n_str("info.content.is.empty"));
+            return;
+        } else if (text.length() > 190) {
+            contentWidget.setInfo(I18nSupport.i18n_str("info.content.to.large"));
             return;
         }
-        myToolWindow = toolWindow;
-
-        toolWindow.setTabActions(new AddTabAction(myProject));
-        toolWindow.setToHideOnEmptyContent(true);
-        myProject.getMessageBus().connect().subscribe(ToolWindowManagerListener.TOPIC, new ToolWindowManagerListener() {
+        final String finalText = text;
+        new CodeGenerateTask(project, text, contentWidget.getMode(), contentWidget.isCli(), new OnExecuteListener() {
             @Override
-            public void toolWindowShown(@NotNull String id, @NotNull ToolWindow toolWindow) {
-                if (CodeitToolWindowFactory.TOOL_WINDOW_ID.equals(id) && myToolWindow == toolWindow &&
-                        toolWindow.isVisible() && toolWindow.getContentManager().getContentCount() == 0) {
-                    // open a new session if all tabs were closed manually
-                    add();
+            public void onStart() {
+                contentWidget.setInfo(I18nSupport.i18n_str("info.starting"));
+            }
+
+            @Override
+            public void onSuccess(Icon icon) {
+                contentWidget.setCode(icon);
+                contentWidget.setInfo(I18nSupport.i18n_str("info.success"));
+            }
+
+            @Override
+            public void onError(String msg) {
+                contentWidget.setInfo(I18nSupport.i18n_str("info.error"));
+            }
+
+            @Override
+            public void onComplete() {
+                if (!CodeitView.this.getHistoryWidget().hasSame(finalText)) {
+                    CodeitView.this.getHistoryWidget().insert(finalText);
                 }
             }
-        });
-    }
-
-    public void add() {
-        Content content = createContent();
-        content.setCloseable(true);
-        content.setDisplayName(generateUniqueName());
-        myToolWindow.getContentManager().addContent(content);
-        myToolWindow.getContentManager().setSelectedContent(content);
-    }
-
-    private String generateUniqueName() {
-        Content[] contents = myToolWindow.getContentManager().getContents();
-        Set<String> names = Sets.newHashSet();
-        for (Content content : contents) {
-            names.add(content.getDisplayName());
-        }
-        String newSdkName = CodeitView.TAB_SUGGESTED_NAME;
-        int i = 0;
-        while (names.contains(newSdkName)) {
-            newSdkName = CodeitView.TAB_SUGGESTED_NAME + " (" + (++i) + ")";
-        }
-        return newSdkName;
-    }
-
-    private Content createContent() {
-        ToolWindowPanel panel = new ToolWindowPanel();
-        Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", false);
-        CodeitContent codeitContent = createCodeitContent();
-        ActionToolbar toolbar = createToolbar(codeitContent);
-        panel.setToolbar(toolbar.getComponent());
-        panel.setContent(codeitContent);
-        return content;
-    }
-
-    private CodeitContent createCodeitContent() {
-        return new CodeitContent(myProject);
-    }
-
-    private ActionToolbar createToolbar(CodeitContent codeitContent) {
-        DefaultActionGroup group = new DefaultActionGroup();
-        group.addAll(
-                new ExecAction(codeitContent),
-                new SaveAction(codeitContent),
-                new EnableCliAction(codeitContent));
-        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(Constant.APP_ID, group, false);
-        toolbar.setOrientation(SwingConstants.VERTICAL);
-        return toolbar;
+        }).start();
     }
 }

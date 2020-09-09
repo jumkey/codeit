@@ -8,9 +8,9 @@ import org.jsoup.select.Elements;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -49,11 +49,7 @@ public class CliApiImpl implements Api {
     }
 
     private static String buildUrl(String text, String mhid) {
-        try {
-            text = URLEncoder.encode(text, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        text = URLEncoder.encode(text, StandardCharsets.UTF_8);
 
         return HOST + QCODE + "?" + "text=" + text + "&mhid=" + mhid;
     }

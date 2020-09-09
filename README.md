@@ -26,6 +26,10 @@ Restart IDE.
 ## Todo
 1. [x] Add toolWindow multiple tabs
 1. [x] I18N
+1. [x] Read QR code from screen
+1. [x] 复制图片到剪切板
+1. [x] 粘贴图片解析成文本
+1. [x] 生成选中的文本
 1. [ ] Rename
 1. [ ] Refactor history list
 1. [ ] UI

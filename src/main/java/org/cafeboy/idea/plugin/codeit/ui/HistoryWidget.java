@@ -1,14 +1,13 @@
 package org.cafeboy.idea.plugin.codeit.ui;
 
-import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryListModel;
-import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
+import org.cafeboy.idea.plugin.codeit.ext.Constant;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,24 +18,25 @@ import java.util.List;
  */
 public class HistoryWidget {
 
-    private final CodeitContent codeitContent;
+    private final Project mProject;
+    private final CodeitView codeitView;
     public JPanel historyPanel;
     private JList<String> jList;
     private List<String> histories = new ArrayList<>();
     private HistoryConfigurable historyConfig;
 
-    public HistoryWidget(Project project, CodeitContent codeitContent) {
-        this.codeitContent = codeitContent;
+    public HistoryWidget(Project project, CodeitView codeitView) {
+        this.mProject = project;
+        this.codeitView = codeitView;
         EventQueue.invokeLater(() -> {
-            HistoryConfigurable historyConfigurable = new HistoryConfigurable(project);
-            setHistory(historyConfigurable.getHistories());
             historyConfig = new HistoryConfigurable(project);
+            setHistory(historyConfig.getHistories());
             setupList();
-            setRightMenu();
+            setRightMenu(createPopupMenu());
         });
     }
 
-    private void setRightMenu() {
+    private void setRightMenu(JPopupMenu jPopupMenu) {
         jList.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -58,38 +58,20 @@ public class HistoryWidget {
                     jList.setSelectedIndex(0);
                 }
                 if (e.isPopupTrigger()) {
-                    createPopupMenu().show(e.getComponent(), e.getX(), e.getY());
+                    jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
     }
 
     private JPopupMenu createPopupMenu() {
-        JPopupMenu jPopupMenu = new JPopupMenu();
-        // show
-        JMenuItem showLine = new JMenuItem(I18nSupport.i18n_str("menu.show.text"), AllIcons.Actions.ShowWriteAccess);
-        showLine.setMnemonic('S');
-        showLine.setAccelerator(KeyStroke.getKeyStroke('R', KeyEvent.CTRL_MASK, false));
-        // delete
-        JMenuItem deleteLine = new JMenuItem(I18nSupport.i18n_str("menu.delete.text"), AllIcons.Actions.Cancel);
-        deleteLine.setMnemonic('D');
-        deleteLine.setAccelerator(KeyStroke.getKeyStroke('D', KeyEvent.CTRL_MASK, false));
-        // listener
-        showLine.addActionListener(e -> changeText(jList.getSelectedValue()));
-        deleteLine.addActionListener(e -> {
-            List<String> selectedValuesList = jList.getSelectedValuesList();
-            histories.removeAll(selectedValuesList);
-        });
-        // add
-        jPopupMenu.add(showLine);
-        jPopupMenu.addSeparator();
-        jPopupMenu.add(deleteLine);
-
-        if (histories == null || histories.size() == 0) {
-            showLine.setEnabled(false);
-            deleteLine.setEnabled(false);
+        AnAction[] children = this.codeitView.createHistoryActions();
+        for (AnAction child : children) {
+            child.registerCustomShortcutSet(jList, null);
         }
-        return jPopupMenu;
+        ActionGroup action = new DefaultActionGroup(children);
+        ActionPopupMenu actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(Constant.APP_ID, action);
+        return actionPopupMenu.getComponent();
     }
 
     private void setupList() {
@@ -99,16 +81,30 @@ public class HistoryWidget {
                 super.mouseClicked(e);
                 if (jList.getSelectedIndex() != -1) {
                     if (e.getClickCount() == 2) {
-                        changeText(jList.getSelectedValue());
+                        changeText();
                     }
                 }
             }
         });
     }
 
-    private void changeText(String selectedValue) {
-        ContentWidget contentWidget = codeitContent.getContentWidget();
+    public void changeText() {
+        String selectedValue = jList.getSelectedValue();
+        ContentWidget contentWidget = codeitView.getContentWidget();
         contentWidget.setText(selectedValue);
+        codeitView.gen(mProject);
+    }
+
+    public int size() {
+        HistoryListModel model = (HistoryListModel) jList.getModel();
+        return model.getSize();
+    }
+
+    public void removeAll() {
+        java.util.List<String> selectedValuesList = jList.getSelectedValuesList();
+        HistoryListModel model = (HistoryListModel) jList.getModel();
+        model.removeAll(selectedValuesList);
+        jList.repaint();
     }
 
     public void insert(String history) {

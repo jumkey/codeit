@@ -9,7 +9,7 @@
       <minimumSize width="-1" height="-1"/>
       <preferredSize width="400" height="-1"/>
     </properties>
-    <border type="none" title-resource-bundle="Codeit" title-key="form.history"/>
+    <border type="none" title-resource-bundle="messages/Codeit" title-key="form.history"/>
     <children>
       <scrollpane id="39c4b">
         <constraints>

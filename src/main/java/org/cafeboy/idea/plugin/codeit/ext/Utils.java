@@ -71,7 +71,7 @@ public class Utils {
         Notifications.Bus.notify(new Notification("1", title, msg, NotificationType.INFORMATION));
     }
 
-    private static BufferedImage getBufferedImage(ImageIcon icon) {
+    public static BufferedImage getBufferedImage(ImageIcon icon) {
         int width = icon.getIconWidth();
         int height = icon.getIconHeight();
         ImageObserver observer = icon.getImageObserver();

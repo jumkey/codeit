@@ -14,7 +14,7 @@ public class CodeitToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        CodeitView mainComponent = CodeitView.getInstance(project);
+        CodeitManager mainComponent = CodeitManager.getInstance(project);
         mainComponent.init((ToolWindowEx) toolWindow);
     }
 }

@@ -25,7 +25,7 @@ public class HistoryConfigurable implements Configurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return null;
+        return "History";
     }
 
     @Nullable

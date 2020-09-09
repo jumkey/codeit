@@ -23,4 +23,8 @@ public class HistoryListModel extends AbstractListModel<String> {
     public String getElementAt(int index) {
         return histories.get(index);
     }
+
+    public void removeAll(List<String> selectedValuesList) {
+        histories.removeAll(selectedValuesList);
+    }
 }
