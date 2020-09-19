@@ -9,6 +9,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.ImageUtil;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 
@@ -31,7 +32,26 @@ public class ZxingApiImpl implements Api {
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
             hints.put(EncodeHintType.MARGIN, 2);
             BitMatrix bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, 200, 200, hints);
-            BufferedImage bufferedImage = toBufferedImage(bitMatrix);
+            int fontColor, backColor, offColor;
+            switch (mode) {
+                case MODE_0:
+                    fontColor = backColor = BLACK;
+                    offColor = WHITE;
+                    break;
+                case MODE_1:
+                    fontColor = 0xFFF2668B;
+                    backColor = 0xFF1876F4;
+                    offColor = WHITE;
+                    break;
+                case MODE_2:
+                    fontColor = 0xFF1876F4;
+                    backColor = 0xFFF2668B;
+                    offColor = WHITE;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + mode);
+            }
+            BufferedImage bufferedImage = toBufferedImage(bitMatrix, fontColor, backColor, offColor);
             return new ImageIcon(bufferedImage);
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,22 +62,30 @@ public class ZxingApiImpl implements Api {
     public static final int BLACK = 0xFF000000;
     public static final int WHITE = 0xFFFFFFFF;
 
-    public static BufferedImage toBufferedImage(BitMatrix matrix) {
+    public static BufferedImage toBufferedImage(BitMatrix matrix, int fromColor, int toColor, int offColor) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
-        BufferedImage image = ImageUtil.createImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
-        int onColor;
-        int offColor;
-        onColor = BLACK;
-        offColor = WHITE;
+        BufferedImage image = ImageUtil.createImage(width, height, BufferedImage.TYPE_INT_RGB);
         int[] pixels = new int[width * height];
-        int index = 0;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                pixels[index++] = matrix.get(x, y) ? onColor : offColor;
+                int onColor = getColorInt(fromColor, toColor, height, y);
+                pixels[y * width + x] = matrix.get(x, y) ? onColor : offColor;
             }
         }
         image.setRGB(0, 0, width, height, pixels, 0, width);
         return image;
+    }
+
+    @SuppressWarnings("UseJBColor")
+    private static int getColorInt(int fromColor, int toColor, int height, int y) {
+        // 二维码颜色（RGB）
+        Color from = new Color(fromColor);
+        Color to = new Color(toColor);
+        int num1 = (int) (from.getRed() - (from.getRed() - to.getRed()) * y / (height - 1.0));
+        int num2 = (int) (from.getGreen() - (from.getGreen() - to.getGreen()) * y / (height - 1.0));
+        int num3 = (int) (from.getBlue() - (from.getBlue() - to.getBlue()) * y / (height - 1.0));
+        Color color = new Color(num1, num2, num3);
+        return color.getRGB();
     }
 }

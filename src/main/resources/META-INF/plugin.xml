@@ -9,7 +9,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="Codeit" icon="/icons/logo_13x13.png" anchor="bottom"
+        <toolWindow id="Codeit" icon="/icons/logo_13x13.svg" anchor="bottom"
                     canCloseContents="true"
                     factoryClass="org.cafeboy.idea.plugin.codeit.ui.CodeitToolWindowFactory"/>
         <projectService
@@ -22,7 +22,7 @@
     <resource-bundle>messages.Codeit</resource-bundle>
     <actions>
         <!-- Add your actions here -->
-        <action id="generate" class="org.cafeboy.idea.plugin.codeit.actions.GenQrAction" icon="/icons/logo_13x13.png"
+        <action id="generate" class="org.cafeboy.idea.plugin.codeit.actions.GenQrAction" icon="/icons/logo_13x13.svg"
                 description="Generate qr code">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
