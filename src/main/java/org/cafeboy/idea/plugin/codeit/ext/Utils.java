@@ -58,7 +58,7 @@ public class Utils {
         if (TextUtils.isEmpty(msg)) {
             return;
         }
-        Notifications.Bus.notify(new Notification("1", title, msg, NotificationType.WARNING));
+        Notifications.Bus.notify(new Notification("Custom Notification Group", title, msg, NotificationType.WARNING));
     }
 
     public static void message(String title, String msg) {
@@ -68,7 +68,7 @@ public class Utils {
         if (TextUtils.isEmpty(msg)) {
             return;
         }
-        Notifications.Bus.notify(new Notification("1", title, msg, NotificationType.INFORMATION));
+        Notifications.Bus.notify(new Notification("Custom Notification Group", title, msg, NotificationType.INFORMATION));
     }
 
     public static BufferedImage getBufferedImage(ImageIcon icon) {

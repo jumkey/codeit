@@ -17,6 +17,7 @@
         <projectConfigurable instance="org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable"
                              id="preferences.history"/>
         <projectService serviceImplementation="org.cafeboy.idea.plugin.codeit.ui.CodeitManager"/>
+        <notificationGroup id="Custom Notification Group" displayType="STICKY_BALLOON" key="notification.group.name"/>
     </extensions>
 
     <resource-bundle>messages.Codeit</resource-bundle>
@@ -26,7 +27,7 @@
                 description="Generate qr code">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
-        <action id="paste" class="org.cafeboy.idea.plugin.codeit.actions.PasteAction" use-shortcut-of="$Paste" icon="AllIcons.Actions.Menu_paste"/>
+        <action id="paste" class="org.cafeboy.idea.plugin.codeit.actions.PasteAction" use-shortcut-of="$Paste" icon="AllIcons.Actions.MenuPaste"/>
         <group id="my.pop.edit">
             <reference ref="EditorCut"/>
             <reference ref="EditorCopy"/>
@@ -36,7 +37,7 @@
             <reference ref="EditorDeleteLine"/>
         </group>
         <group id="my.pop.qr">
-            <action id="save" class="org.cafeboy.idea.plugin.codeit.actions.SaveAction" icon="AllIcons.Actions.Menu_saveall"/>
+            <action id="save" class="org.cafeboy.idea.plugin.codeit.actions.SaveAction" icon="AllIcons.Actions.MenuSaveall"/>
             <action id="copy" class="org.cafeboy.idea.plugin.codeit.actions.CopyAction" icon="AllIcons.Actions.Copy"/>
         </group>
         <group id="my.toolbar">
