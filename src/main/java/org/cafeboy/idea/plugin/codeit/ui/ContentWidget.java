@@ -2,6 +2,7 @@ package org.cafeboy.idea.plugin.codeit.ui;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.JBUI;
 import org.cafeboy.idea.plugin.codeit.core.Api;
 import org.cafeboy.idea.plugin.codeit.ext.Constant;
@@ -17,7 +18,7 @@ public class ContentWidget {
     private final Project mProject;
     private final CodeitView codeitView;
     public JPanel mContent;
-    private JTextArea textArea;
+    private JBTextArea textArea;
     private JLabel mCodeLabel;
     private JLabel labelInfo;
     private JRadioButton radioDefault;
@@ -60,6 +61,7 @@ public class ContentWidget {
     }
 
     private void setupTextArea() {
+        textArea.getEmptyText().setText("...");
         textArea.setMargin(JBUI.insets(2));
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);

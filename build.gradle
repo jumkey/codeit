@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'
+    id 'org.jetbrains.intellij' version '1.2.0'
 }
 
 group 'org.cafeboy.idea.plugin'
@@ -17,22 +17,22 @@ repositories {
 
 dependencies {
     implementation 'com.google.zxing:core:3.4.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2020.3.3'
+    version = '2020.3.4'
 }
 patchPluginXml {
-    sinceBuild "145.0"
-    untilBuild null
-    pluginDescription """
-      A plug-in that generates a two-dimensional code of a specific text.<br>
+    sinceBuild = "145.0"
+    untilBuild = null
+    pluginDescription = """
+      A plug-in that generates a two-dimensional code of a specific text.<br/>
   """
-    changeNotes """
-      v1.0.0<br> - First release.<br>
+    changeNotes = """
+      v1.0.0<br/> - First release.<br/>
   """
 }
 test {

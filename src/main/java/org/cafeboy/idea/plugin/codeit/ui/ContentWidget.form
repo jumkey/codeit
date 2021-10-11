@@ -37,7 +37,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="34042" class="javax.swing.JTextArea" binding="textArea">
+                  <component id="34042" class="com.intellij.ui.components.JBTextArea" binding="textArea">
                     <constraints/>
                     <properties>
                       <font size="14"/>

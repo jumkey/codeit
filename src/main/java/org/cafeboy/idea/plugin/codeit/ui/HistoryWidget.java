@@ -2,6 +2,7 @@ package org.cafeboy.idea.plugin.codeit.ui;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.components.JBList;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryListModel;
 import org.cafeboy.idea.plugin.codeit.ext.Constant;
@@ -21,7 +22,7 @@ public class HistoryWidget {
     private final Project mProject;
     private final CodeitView codeitView;
     public JPanel historyPanel;
-    private JList<String> jList;
+    private JBList<String> jList;
     private List<String> histories = new ArrayList<>();
     private HistoryConfigurable historyConfig;
 
