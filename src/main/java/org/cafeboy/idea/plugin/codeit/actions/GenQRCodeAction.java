@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author jumkey
  */
-public class GenQrAction extends AnAction {
+public class GenQRCodeAction extends AnAction {
 
     @Override
     public void update(@NotNull final AnActionEvent e) {
@@ -44,7 +44,7 @@ public class GenQrAction extends AnAction {
         assert toolWindow != null;
         toolWindow.show(() -> {
             // changeText
-            // genQr
+            // genQRCode
             for (Content selectedContent : toolWindow.getContentManager().getSelectedContents()) {
                 ((CodeitContent) selectedContent).getCodeitView().getContentWidget().setText(selectedText);
                 ((CodeitContent) selectedContent).getCodeitView().gen(project);

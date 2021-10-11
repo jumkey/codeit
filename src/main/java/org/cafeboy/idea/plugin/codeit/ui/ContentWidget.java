@@ -53,7 +53,7 @@ public class ContentWidget {
     }
 
     private void setupImage() {
-        ActionGroup action = (ActionGroup) ActionManager.getInstance().getAction("my.pop.qr");
+        ActionGroup action = (ActionGroup) ActionManager.getInstance().getAction("my.pop.qrcode");
         ActionPopupMenu actionPopupMenu = ActionManager.getInstance().createActionPopupMenu(Constant.APP_ID, action);
         actionPopupMenu.setTargetComponent(this.codeitView);
         JPopupMenu jPopupMenu = actionPopupMenu.getComponent();

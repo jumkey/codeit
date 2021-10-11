@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.util.TextUtils;
-import org.cafeboy.idea.plugin.codeit.core.QrRead;
+import org.cafeboy.idea.plugin.codeit.core.QRCodeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -44,7 +44,7 @@ public class PasteAction extends AnAction {
             try {
                 Image str = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
                 // 解析图片二维码
-                textArea.setText(StringUtils.join(QrRead.readQrCodeWithoutSplash((BufferedImage) str), "\r\n"));
+                textArea.setText(StringUtils.join(QRCodeUtils.readQRCodeWithoutSplash((BufferedImage) str), "\r\n"));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

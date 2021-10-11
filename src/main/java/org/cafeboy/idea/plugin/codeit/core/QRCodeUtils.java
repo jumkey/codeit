@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * @author jumkey
  */
-public class QrRead {
+public class QRCodeUtils {
 
     public static List<String> captureScreenAndRead() {
         // 获取屏幕尺寸
@@ -31,7 +31,7 @@ public class QrRead {
             // 截屏操作
             BufferedImage bufImage = new Robot().createScreenCapture(screenRect);
 
-            return readQrCode(bufImage);
+            return readQRCode(bufImage);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +46,7 @@ public class QrRead {
      *
      * @return 二维码信息
      */
-    public static List<String> readQrCode(BufferedImage bufImage) throws NotFoundException {
+    public static List<String> readQRCode(BufferedImage bufImage) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
 
         for (Result result : results) {
@@ -65,7 +65,7 @@ public class QrRead {
      *
      * @return 二维码信息
      */
-    public static List<String> readQrCodeWithoutSplash(BufferedImage bufImage) throws NotFoundException {
+    public static List<String> readQRCodeWithoutSplash(BufferedImage bufImage) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
