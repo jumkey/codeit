@@ -42,7 +42,7 @@ public class CodeitView extends JPanel {
         return historyWidget;
     }
 
-    public AnAction @NotNull[] createHistoryActions() {
+    public AnAction @NotNull [] createHistoryActions() {
         List<AnAction> historyActions = new ArrayList<>();
         historyActions.add(new ShowAction(this));
         historyActions.add(new DeleteAction(this));
@@ -50,7 +50,6 @@ public class CodeitView extends JPanel {
     }
 
     public void gen(Project project) {
-        ContentWidget contentWidget = this.getContentWidget();
         String text = contentWidget.getText();
         if (TextUtils.isEmpty(text)) {
             contentWidget.setInfo(I18nSupport.i18n_str("info.content.is.empty"));
@@ -59,8 +58,19 @@ public class CodeitView extends JPanel {
             contentWidget.setInfo(I18nSupport.i18n_str("info.content.to.large"));
             return;
         }
-        final String finalText = text;
-        new CodeGenerateTask(project, text, contentWidget.getMode(), contentWidget.isCli(), new OnExecuteListener() {
+        gen(project, text);
+    }
+
+    public void regen(Project project) {
+        final String text = contentWidget.getCodeText();
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+        gen(project, text);
+    }
+
+    private void gen(Project project, String finalText) {
+        new CodeGenerateTask(project, finalText, contentWidget.getMode(), contentWidget.isCli(), new OnExecuteListener<>() {
             @Override
             public void onStart() {
                 contentWidget.setInfo(I18nSupport.i18n_str("info.starting"));
@@ -69,6 +79,7 @@ public class CodeitView extends JPanel {
             @Override
             public void onSuccess(Icon icon) {
                 contentWidget.setCode(icon);
+                contentWidget.setCodeText(finalText);
                 contentWidget.setInfo(I18nSupport.i18n_str("info.success"));
             }
 
@@ -79,9 +90,7 @@ public class CodeitView extends JPanel {
 
             @Override
             public void onComplete() {
-                if (!CodeitView.this.getHistoryWidget().hasSame(finalText)) {
-                    CodeitView.this.getHistoryWidget().insert(finalText);
-                }
+                CodeitView.this.getHistoryWidget().insert(finalText);
             }
         }).start();
     }

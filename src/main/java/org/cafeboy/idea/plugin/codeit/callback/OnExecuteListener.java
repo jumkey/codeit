@@ -1,11 +1,9 @@
 package org.cafeboy.idea.plugin.codeit.callback;
 
-import javax.swing.*;
-
 /**
  * @author jumkey
  */
-public interface OnExecuteListener {
+public interface OnExecuteListener<T> {
 
     /**
      * 执行开始时回调
@@ -15,9 +13,9 @@ public interface OnExecuteListener {
     /**
      * 获取成功时回调
      *
-     * @param icon icon
+     * @param result 结果
      */
-    void onSuccess(Icon icon);
+    void onSuccess(T result);
 
     /**
      * 发生错误回调

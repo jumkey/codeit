@@ -1,6 +1,8 @@
 package org.cafeboy.idea.plugin.codeit.ui;
 
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.JBUI;
@@ -47,8 +49,8 @@ public class ContentWidget {
     private void changeMode(int mode) {
         if (mode != currentMode) {
             currentMode = mode;
-            // TODO 使用当前输入框内容还是原先生成的内容
-            codeitView.gen(mProject);
+            // 使用原先的内容生成
+            codeitView.regen(mProject);
         }
     }
 
@@ -86,6 +88,15 @@ public class ContentWidget {
 
     public void setCode(Icon icon) {
         mCodeLabel.setIcon(icon);
+    }
+
+    public void setCodeText(String text) {
+        mCodeLabel.setText(text);
+        mCodeLabel.setToolTipText(text);
+    }
+
+    public String getCodeText() {
+        return mCodeLabel.getText();
     }
 
     public Icon getCode() {

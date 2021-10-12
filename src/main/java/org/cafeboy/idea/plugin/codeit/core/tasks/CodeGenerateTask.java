@@ -24,7 +24,7 @@ public class CodeGenerateTask {
     private final Api api = new ZxingApiImpl();
     private final Api api2 = new CliApiImpl();
 
-    public CodeGenerateTask(Project project, String text, String mode, Boolean isCli, OnExecuteListener onExecuteListener) {
+    public CodeGenerateTask(Project project, String text, String mode, Boolean isCli, OnExecuteListener<Icon> onExecuteListener) {
         onExecuteListener.onStart();
         task = new Task.Backgroundable(project,
                 I18nSupport.i18n_str("progress.title.generating"), true, PerformInBackgroundOption.ALWAYS_BACKGROUND) {

@@ -1,6 +1,6 @@
 # Codeit
 
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/jumkey/Codeit/releases/latest)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/jumkey/codeit/releases/latest)
 [![License2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ![](src/main/resources/META-INF/pluginIcon.svg)
@@ -19,14 +19,14 @@ v1.0.0<br> - First release.<br>
 - Using IDE built-in plugin system:
   - <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "Codeit"</kbd> > <kbd>Install Plugin</kbd>
 - Manually:
-  - Download the [Latest release](https://github.com/jumkey/Codeit/releases/latest) and install it manually using <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install Plugin from disk...</kbd>
+  - Download the [Latest release](https://github.com/jumkey/codeit/releases/latest) and install it manually using <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install Plugin from disk...</kbd>
   
 Restart IDE.
 
 ## Todo
 1. [x] Add toolWindow multiple tabs
 1. [x] I18N
-1. [x] Read QR Code from screen
+1. [x] Read QR Code from the screen
 1. [x] 复制图片到剪切板
 1. [x] 粘贴图片解析成文本
 1. [x] 生成选中的文本

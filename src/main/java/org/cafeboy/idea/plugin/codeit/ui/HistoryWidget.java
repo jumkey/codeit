@@ -109,6 +109,7 @@ public class HistoryWidget {
     }
 
     public void insert(String history) {
+        histories.remove(history);
         histories.add(0, history);
         try {
             historyConfig.setHistories(histories);
