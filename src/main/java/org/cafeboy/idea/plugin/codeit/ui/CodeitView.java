@@ -3,6 +3,7 @@ package org.cafeboy.idea.plugin.codeit.ui;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import org.apache.http.util.TextUtils;
+import org.cafeboy.idea.plugin.codeit.actions.CopyHistoryAction;
 import org.cafeboy.idea.plugin.codeit.actions.DeleteAction;
 import org.cafeboy.idea.plugin.codeit.actions.ShowAction;
 import org.cafeboy.idea.plugin.codeit.callback.OnExecuteListener;
@@ -45,6 +46,7 @@ public class CodeitView extends JPanel {
     public AnAction @NotNull [] createHistoryActions() {
         List<AnAction> historyActions = new ArrayList<>();
         historyActions.add(new ShowAction(this));
+        historyActions.add(new CopyHistoryAction(this));
         historyActions.add(new DeleteAction(this));
         return historyActions.toArray(AnAction.EMPTY_ARRAY);
     }

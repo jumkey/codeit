@@ -3,6 +3,7 @@ package org.cafeboy.idea.plugin.codeit.ui;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBList;
+import org.apache.commons.lang3.StringUtils;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryListModel;
 import org.cafeboy.idea.plugin.codeit.ext.Constant;
@@ -120,8 +121,8 @@ public class HistoryWidget {
         }
     }
 
-    public boolean hasSame(String text) {
-        return histories.contains(text);
+    public String getSelectedValues() {
+        return StringUtils.join(jList.getSelectedValuesList(), null);
     }
 
     private void notifyDataChanged() {
