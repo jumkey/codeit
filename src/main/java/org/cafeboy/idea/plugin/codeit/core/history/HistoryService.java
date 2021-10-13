@@ -22,7 +22,7 @@ public class HistoryService implements PersistentStateComponent<HistoryService> 
     private List<String> histories;
 
     public static HistoryService getInstance(Project project) {
-        return ServiceManager.getService(project, HistoryService.class);
+        return project.getService(HistoryService.class);
     }
 
     @Nullable

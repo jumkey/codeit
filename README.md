@@ -7,6 +7,8 @@
 
 A plug-in generates QR Code of a specific text.
 
+Base on [Quoit-idea](https://github.com/shenhuanet/Quoit-idea)
+
 ## Preview
 
 ![](preview/pic_001.png)

@@ -26,10 +26,12 @@ intellij {
     version = '2020.3.4'
 }
 patchPluginXml {
-    sinceBuild = "145.0"
-    untilBuild = null
+    untilBuild = providers.provider({ null })
     pluginDescription = """
-      A plug-in that generates a two-dimensional code of a specific text.<br/>
+      A plug-in that generates a two-dimensional barcode of a specific text.<br/>
+      - Create QR Code.<br/>
+      - Read QR Code from the screen.<br/>
+      - Parse QR Code picture into text.<br/>
   """
     changeNotes = """
       v1.0.0<br/> - First release.<br/>
