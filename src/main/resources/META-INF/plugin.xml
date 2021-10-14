@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>org.cafeboy.idea.plugin.codeit</id>
     <name>Codeit</name>
-    <vendor email="474868678@qq.com" url="https://www.cafeboy.org">cafeboy</vendor>
+    <vendor email="474868678@qq.com" url="https://www.cafeboy.org">Jumkey Chen</vendor>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -24,7 +24,7 @@
     <actions>
         <!-- Add your actions here -->
         <action id="generate" class="org.cafeboy.idea.plugin.codeit.actions.GenQRCodeAction" icon="/icons/logo_13x13.svg"
-                description="Generate QR Code">
+                description="Generate QR code">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
         <action id="paste" class="org.cafeboy.idea.plugin.codeit.actions.PasteAction" use-shortcut-of="$Paste" icon="AllIcons.Actions.MenuPaste"/>

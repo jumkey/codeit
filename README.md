@@ -5,7 +5,7 @@
 
 ![](src/main/resources/META-INF/pluginIcon.svg)
 
-A plug-in generates QR Code of a specific text.
+A plug-in generates QR code of a specific text.
 
 Base on [Quoit-idea](https://github.com/shenhuanet/Quoit-idea)
 
@@ -28,7 +28,7 @@ Restart IDE.
 ## Todo
 1. [x] Add toolWindow multiple tabs
 1. [x] I18N
-1. [x] Read QR Code from the screen
+1. [x] Read QR code from the screen
 1. [x] 复制图片到剪切板
 1. [x] 粘贴图片解析成文本
 1. [x] 生成选中的文本

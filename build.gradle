@@ -1,6 +1,9 @@
+import org.jetbrains.changelog.ExtensionsKt
+
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '1.2.0'
+    id 'org.jetbrains.changelog' version '1.2.1'
 }
 
 group 'org.cafeboy.idea.plugin'
@@ -26,16 +29,20 @@ intellij {
     version = '2020.3.4'
 }
 patchPluginXml {
-    untilBuild = providers.provider({ null })
-    pluginDescription = """
-      A plug-in that generates a two-dimensional barcode of a specific text.<br/>
-      - Create QR Code.<br/>
-      - Read QR Code from the screen.<br/>
-      - Parse QR Code picture into text.<br/>
-  """
-    changeNotes = """
-      v1.0.0<br/> - First release.<br/>
-  """
+    version = '1.0.0'
+    sinceBuild = '203'
+    untilBuild = provider { null }
+    pluginDescription = ExtensionsKt.markdownToHTML("""## Description
+A plug-in that generates a two-dimensional barcode of a specific text.
+## Features
+- Create QR code.
+- Read QR code from the screen.
+- Parse QR code picture into text.
+## How to use
+- Right-click the selected text to generate a QR code
+- Open Codeit tool window to discover more features
+""")
+    changeNotes = changelog.getLatest().toHTML()
 }
 test {
     useJUnitPlatform()
