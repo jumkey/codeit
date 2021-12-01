@@ -15,7 +15,8 @@ Base on [Quoit-idea](https://github.com/shenhuanet/Quoit-idea)
 ![](preview/pic_002.png)
 
 ## Change Log
-v1.0.0<br> - First release.<br>
+
+[CHANGELOG](CHANGELOG.md)
 
 ## Installation
 - Using IDE built-in plugin system:
