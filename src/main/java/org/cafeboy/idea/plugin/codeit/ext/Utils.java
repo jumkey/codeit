@@ -1,6 +1,7 @@
 package org.cafeboy.idea.plugin.codeit.ext;
 
 import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationAction;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.util.ui.ImageUtil;
@@ -69,6 +70,16 @@ public class Utils {
             return;
         }
         Notifications.Bus.notify(new Notification("Custom Notification Group", title, msg, NotificationType.INFORMATION));
+    }
+
+    public static void message(String title, String msg, NotificationAction anAction) {
+        if (TextUtils.isEmpty(title)) {
+            title = Constant.APP_ID;
+        }
+        if (TextUtils.isEmpty(msg)) {
+            return;
+        }
+        Notifications.Bus.notify(new Notification("Custom Notification Group", title, msg, NotificationType.INFORMATION).addAction(anAction));
     }
 
     public static BufferedImage getBufferedImage(ImageIcon icon) {

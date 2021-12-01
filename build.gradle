@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'org.cafeboy.idea.plugin'
-version '1.0.0'
+version '1.0.1-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
 
@@ -29,7 +29,6 @@ intellij {
     version = '2020.3.4'
 }
 patchPluginXml {
-    version = '1.0.0'
     sinceBuild = '203'
     untilBuild = provider { null }
     pluginDescription = ExtensionsKt.markdownToHTML("""## Description

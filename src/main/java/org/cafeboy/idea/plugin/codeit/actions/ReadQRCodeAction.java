@@ -1,9 +1,10 @@
 package org.cafeboy.idea.plugin.codeit.actions;
 
+import com.intellij.notification.NotificationAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import org.apache.commons.lang3.StringUtils;
+import com.intellij.openapi.ide.CopyPasteManager;
 import org.cafeboy.idea.plugin.codeit.core.QRCodeUtils;
 import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
 import org.cafeboy.idea.plugin.codeit.ext.Utils;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.List;
 
 /**
@@ -33,9 +35,14 @@ public class ReadQRCodeAction extends AnAction {
             if (list.isEmpty()) {
                 Utils.warning(I18nSupport.i18n_str("action.read.qrcode.msg.title"), I18nSupport.i18n_str("action.read.qrcode.msg.notfound"));
             } else {
-                final String join = StringUtils.join(list, System.lineSeparator());
-                list.forEach(text -> codeitView.getHistoryWidget().insert(text));
-                Utils.message(I18nSupport.i18n_str("action.read.qrcode.msg.title"), join);
+                list.forEach(text -> {
+                    codeitView.getHistoryWidget().insert(text);
+                    final NotificationAction copyToClipboard = NotificationAction.create(I18nSupport.i18n_str("action.copy.to.clipboard.text"), (ee, notification) -> {
+                        notification.expire();
+                        CopyPasteManager.getInstance().setContents(new StringSelection(text));
+                    });
+                    Utils.message(I18nSupport.i18n_str("action.read.qrcode.msg.title"), text, copyToClipboard);
+                });
             }
             // restore icon
             codeitView.getContentWidget().setCode(icon);

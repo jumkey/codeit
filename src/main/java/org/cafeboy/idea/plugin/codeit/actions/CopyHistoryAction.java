@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CustomShortcutSet;
+import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.TextTransferable;
 import org.cafeboy.idea.plugin.codeit.ext.I18nSupport;
@@ -11,8 +12,6 @@ import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 
 public class CopyHistoryAction extends AnAction {
 
@@ -33,8 +32,7 @@ public class CopyHistoryAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         final String text = codeitView.getHistoryWidget().getSelectedValues();
-        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-        clipboard.setContents(new TextTransferable(text), null);
+        CopyPasteManager.getInstance().setContents(new TextTransferable(text));
     }
 }
