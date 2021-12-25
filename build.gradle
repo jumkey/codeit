@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'org.cafeboy.idea.plugin'
-version '1.0.1-SNAPSHOT'
+version '1.0.1'
 sourceCompatibility = 11
 targetCompatibility = 11
 
@@ -26,7 +26,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2020.3.4'
+    version = '2021.2.4'
 }
 patchPluginXml {
     sinceBuild = '203'
