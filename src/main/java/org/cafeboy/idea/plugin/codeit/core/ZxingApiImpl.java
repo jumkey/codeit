@@ -5,8 +5,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.ui.ImageUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,7 @@ public class ZxingApiImpl implements Api {
 
     @Override
     public Icon getCode(String text, String mode) {
-        if (StringUtil.isEmptyOrSpaces(text)) {
+        if (StringUtils.isEmpty(text)) {
             return null;
         }
 
@@ -65,7 +64,7 @@ public class ZxingApiImpl implements Api {
     public static BufferedImage toBufferedImage(BitMatrix matrix, int fromColor, int toColor, int offColor) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
-        BufferedImage image = ImageUtil.createImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         int[] pixels = new int[width * height];
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
