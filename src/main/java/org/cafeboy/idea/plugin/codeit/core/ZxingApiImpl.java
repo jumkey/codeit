@@ -61,6 +61,7 @@ public class ZxingApiImpl implements Api {
     public static final int BLACK = 0xFF000000;
     public static final int WHITE = 0xFFFFFFFF;
 
+    @SuppressWarnings("UndesirableClassUsage")
     public static BufferedImage toBufferedImage(BitMatrix matrix, int fromColor, int toColor, int offColor) {
         int width = matrix.getWidth();
         int height = matrix.getHeight();

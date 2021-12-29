@@ -9,10 +9,8 @@ import org.cafeboy.idea.plugin.codeit.ui.QRCodeSplashForm;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,16 +18,27 @@ import java.util.stream.Collectors;
  */
 public class QRCodeUtils {
 
+    @SuppressWarnings("UndesirableClassUsage")
     public static List<String> captureScreenAndRead() {
-        // 获取屏幕尺寸
-        // 创建需要截取的矩形区域
-        Rectangle screenRect = new Rectangle(0, 0, 0, 0);
-        for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
-            screenRect = screenRect.union(gd.getDefaultConfiguration().getBounds());
-        }
         try {
-            // 截屏操作
-            BufferedImage bufImage = new Robot().createScreenCapture(screenRect);
+            // 获取屏幕尺寸
+            // 创建需要截取的矩形区域
+            Rectangle screenRect = new Rectangle(0, 0, 0, 0);
+            final Robot robot = new Robot();
+            final Map<Rectangle, BufferedImage> map = new HashMap<>();
+            for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+                final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
+                screenRect = screenRect.union(bounds);
+                // 截屏操作
+                BufferedImage bufImage = robot.createScreenCapture(bounds);
+                map.put(bounds, bufImage);
+            }
+            // 全尺寸图
+            final BufferedImage bufImage = new BufferedImage(screenRect.width, screenRect.height, BufferedImage.TYPE_INT_ARGB);
+            // Draw the original image
+            Graphics2D g = bufImage.createGraphics();
+            map.forEach((bounds, image) -> g.drawImage(image, null, bounds.x, bounds.y));
+            g.dispose();
 
             return readQRCode(bufImage);
         } catch (NotFoundException ignored) {

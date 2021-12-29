@@ -28,14 +28,18 @@ Restart IDE.
 
 ## Todo
 1. [x] Add toolWindow multiple tabs
-1. [x] I18N
-1. [x] Read QR code from the screen
-1. [x] 复制图片到剪切板
-1. [x] 粘贴图片解析成文本
-1. [x] 生成选中的文本
-1. [ ] Rename
-1. [ ] Refactor history list
-1. [ ] UI
+2. [x] I18N
+3. [x] Read QR code from the screen
+4. [x] 复制图片到剪切板
+5. [x] 粘贴图片解析成文本
+6. [x] 生成选中的文本
+7. [ ] Rename
+8. [ ] Refactor history list
+9. [ ] UI
+
+## Sponsors
+
+[![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSourceSupport)
 
 ## License
 
