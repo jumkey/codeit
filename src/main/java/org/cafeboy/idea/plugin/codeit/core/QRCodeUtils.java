@@ -24,13 +24,12 @@ public class QRCodeUtils {
             // 获取屏幕尺寸
             // 创建需要截取的矩形区域
             Rectangle screenRect = new Rectangle(0, 0, 0, 0);
-            final Robot robot = new Robot();
             final Map<Rectangle, BufferedImage> map = new HashMap<>();
             for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
                 final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
                 screenRect = screenRect.union(bounds);
                 // 截屏操作
-                BufferedImage bufImage = robot.createScreenCapture(bounds);
+                BufferedImage bufImage = new Robot(gd).createScreenCapture(bounds);
                 map.put(bounds, bufImage);
             }
             // 全尺寸图
