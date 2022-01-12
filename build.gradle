@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'org.cafeboy.idea.plugin'
-version '1.0.2-SNAPSHOT'
+version '1.0.2'
 sourceCompatibility = 11
 targetCompatibility = 11
 
