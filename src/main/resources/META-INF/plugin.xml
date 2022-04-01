@@ -14,8 +14,6 @@
                     factoryClass="org.cafeboy.idea.plugin.codeit.ui.CodeitToolWindowFactory"/>
         <projectService
                 serviceImplementation="org.cafeboy.idea.plugin.codeit.core.history.HistoryService"/>
-        <projectConfigurable instance="org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable"
-                             id="preferences.history"/>
         <projectService serviceImplementation="org.cafeboy.idea.plugin.codeit.ui.CodeitManager"/>
         <notificationGroup id="Custom Notification Group" displayType="STICKY_BALLOON" key="notification.group.name"/>
     </extensions>

@@ -4,8 +4,8 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBList;
 import org.apache.commons.lang3.StringUtils;
-import org.cafeboy.idea.plugin.codeit.core.history.HistoryConfigurable;
 import org.cafeboy.idea.plugin.codeit.core.history.HistoryListModel;
+import org.cafeboy.idea.plugin.codeit.core.history.HistoryService;
 import org.cafeboy.idea.plugin.codeit.ext.Constant;
 
 import javax.swing.*;
@@ -25,14 +25,14 @@ public class HistoryWidget {
     public JPanel historyPanel;
     private JBList<String> jList;
     private List<String> histories = new ArrayList<>();
-    private HistoryConfigurable historyConfig;
+    private final HistoryService historyService;
 
     public HistoryWidget(Project project, CodeitView codeitView) {
         this.mProject = project;
         this.codeitView = codeitView;
+        historyService = HistoryService.getInstance(project);
         EventQueue.invokeLater(() -> {
-            historyConfig = new HistoryConfigurable(project);
-            setHistory(historyConfig.getHistories());
+            setHistory(historyService.getHistories());
             setupList();
             setRightMenu(createPopupMenu());
         });
@@ -113,8 +113,7 @@ public class HistoryWidget {
         histories.remove(history);
         histories.add(0, history);
         try {
-            historyConfig.setHistories(histories);
-            historyConfig.apply();
+            historyService.setHistories(histories);
             notifyDataChanged();
         } catch (Exception e) {
             e.printStackTrace();

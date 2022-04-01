@@ -30,7 +30,7 @@ public class GenQRCodeAction extends AnAction {
             menuAllowed = !editor.getCaretModel().getAllCarets().isEmpty();
             menuEnabled = editor.getSelectionModel().hasSelection();
         }
-        e.getPresentation().setVisible(menuAllowed);
+        e.getPresentation().setVisible(menuAllowed && menuEnabled);
         e.getPresentation().setEnabled(menuEnabled);
     }
 
