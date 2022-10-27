@@ -34,7 +34,6 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
     Color brush;
 
     public QRCodeSplashForm() {
-
         this.setName("QRCodeSplashForm");
 
         this.setBackground(transparent);
@@ -52,6 +51,10 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
     public void start() {
         sw.start();
         timer.start();
+    }
+
+    public boolean isRunning() {
+        return timer.isRunning();
     }
 
     @SuppressWarnings("UseJBColor")
@@ -106,10 +109,9 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
 
     @Override
     public void paint(Graphics g) {
-        //clear(transparent)
-        super.paint(g);
-        Graphics2D gg = (Graphics2D) g;
         final int thickness = 4;
+        Graphics2D gg = (Graphics2D) g;
+        gg.clearRect(0, 0, getSize().width, getSize().height);
         gg.setColor(brush);
         gg.fillRect(0, 0, getSize().width, getSize().height);
         gg.setColor(pen);
@@ -117,21 +119,12 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
         gg.drawRect(thickness / 2, thickness / 2, w - thickness, h - thickness);
     }
 
-    public static void show(int x, int y, int w, int h) {
-
+    public static QRCodeSplashForm show(int x, int y, int w, int h) {
         QRCodeSplashForm splash = new QRCodeSplashForm();
         // TODO: test on high DPI
         splash.targetRect = new Rectangle(x, y, w, h);
 
         splash.start();
-    }
-
-    public static void main(String[] args) {
-
-        int x = 300;
-        int y = 300;
-        int w = 300;
-        int h = 300;
-        show(x, y, w, h);
+        return splash;
     }
 }
