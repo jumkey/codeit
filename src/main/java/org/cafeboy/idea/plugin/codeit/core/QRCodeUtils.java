@@ -78,13 +78,13 @@ public class QRCodeUtils {
      * @return 二维码信息
      */
     public static List<String> readQRCodeWithoutSplash(Image image) throws NotFoundException {
-        BufferedImage bufImage = getImage(image);
+        BufferedImage bufImage = getBufferedImage(image);
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("UndesirableClassUsage")
-    public static BufferedImage getImage(Image image) {
+    @SuppressWarnings({"UndesirableClassUsage", "UseJBColor"})
+    public static BufferedImage getBufferedImage(Image image) {
         if (image instanceof BufferedImage) return (BufferedImage) image;
         Lock lock = new ReentrantLock();
         Condition size = lock.newCondition(), data = lock.newCondition();
