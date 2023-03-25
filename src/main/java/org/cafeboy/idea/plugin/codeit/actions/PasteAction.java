@@ -14,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.image.BufferedImage;
 
 public class PasteAction extends AnAction {
     @Override
@@ -42,9 +41,9 @@ public class PasteAction extends AnAction {
             }
         } else if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
             try {
-                Image str = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
+                Image image = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
                 // 解析图片二维码
-                textArea.setText(StringUtils.join(QRCodeUtils.readQRCodeWithoutSplash((BufferedImage) str), "\r\n"));
+                textArea.setText(StringUtils.join(QRCodeUtils.readQRCodeWithoutSplash(image), "\r\n"));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

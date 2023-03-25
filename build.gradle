@@ -1,13 +1,14 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.9.0'
-    id 'org.jetbrains.changelog' version '1.3.1'
+    id 'org.jetbrains.intellij' version '1.13.2'
+    id 'org.jetbrains.changelog' version '2.0.0'
     id 'java'
 }
 
 group 'org.cafeboy.idea.plugin'
-version '1.0.3'
+version '1.0.4'
 sourceCompatibility = 11
 targetCompatibility = 11
 
@@ -29,7 +30,7 @@ intellij {
 }
 patchPluginXml {
     sinceBuild = '203'
-    untilBuild = provider { null }
+    untilBuild = ''
     pluginDescription = ExtensionsKt.markdownToHTML("""## Description
 A plug-in that generates a two-dimensional barcode of a specific text.
 ## Features
@@ -40,7 +41,13 @@ A plug-in that generates a two-dimensional barcode of a specific text.
 - Right-click the selected text to generate a QR code
 - Open Codeit tool window to discover more features
 """)
-    changeNotes = changelog.getLatest().toHTML()
+    changeNotes = changelog.renderItem(
+            changelog
+                    .getLatest()
+                    .withHeader(false)
+                    .withEmptySections(false),
+            Changelog.OutputType.HTML
+    )
 }
 test {
     useJUnitPlatform()
