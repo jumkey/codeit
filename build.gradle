@@ -49,6 +49,9 @@ A plug-in that generates a two-dimensional barcode of a specific text.
             Changelog.OutputType.HTML
     )
 }
+publishPlugin {
+    token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
+}
 test {
     useJUnitPlatform()
 }
