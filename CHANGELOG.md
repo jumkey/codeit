@@ -27,7 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First release.
 
-[Unreleased]: https://github.com/jumkey/codeit/compare/master...develop
+[Unreleased]: https://github.com/jumkey/codeit/compare/main...develop
+[1.0.4]: https://github.com/jumkey/codeit/releases/tag/v1.0.4
 [1.0.3]: https://github.com/jumkey/codeit/releases/tag/v1.0.3
 [1.0.2]: https://github.com/jumkey/codeit/releases/tag/v1.0.2
 [1.0.1]: https://github.com/jumkey/codeit/releases/tag/v1.0.1
