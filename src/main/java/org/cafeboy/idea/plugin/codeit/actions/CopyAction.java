@@ -11,13 +11,19 @@ import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CopyAction extends AnAction {
 
     @Override
     public void update(@NotNull AnActionEvent e) {
         final Project project = e.getProject();
-        final CodeitView codeitView = (CodeitView) e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        Component component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        CodeitView codeitView = null;
+        if (component instanceof CodeitView) {
+            codeitView = (CodeitView) component;
+        }
+
         e.getPresentation().setEnabled(project != null && codeitView != null && codeitView.getContentWidget().getCode() != null);
     }
 

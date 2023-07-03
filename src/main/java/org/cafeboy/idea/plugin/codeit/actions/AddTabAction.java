@@ -21,7 +21,7 @@ public class AddTabAction extends AnAction {
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
         CodeitManager.getInstance(myProject).add();
     }
 }

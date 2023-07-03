@@ -2,13 +2,13 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.13.2'
+    id 'org.jetbrains.intellij' version '1.14.2'
     id 'org.jetbrains.changelog' version '2.0.0'
     id 'java'
 }
 
 group 'org.cafeboy.idea.plugin'
-version '1.0.4'
+version '1.0.5'
 sourceCompatibility = 11
 targetCompatibility = 11
 

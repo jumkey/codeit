@@ -16,6 +16,7 @@ import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author jumkey
@@ -26,7 +27,11 @@ public class SaveAction extends AnAction {
     public void update(@NotNull final AnActionEvent e) {
         // Get required data keys
         final Project project = e.getProject();
-        final CodeitView codeitView = (CodeitView) e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        Component component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        CodeitView codeitView = null;
+        if (component instanceof CodeitView) {
+            codeitView = (CodeitView) component;
+        }
 
         // Set visibility only in case of existing project and icon
         e.getPresentation().setEnabled(project != null && codeitView != null && codeitView.getContentWidget().getCode() != null);

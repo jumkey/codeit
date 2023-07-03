@@ -7,6 +7,8 @@ import com.intellij.openapi.project.Project;
 import org.cafeboy.idea.plugin.codeit.ui.CodeitView;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+
 /**
  * @author jumkey
  */
@@ -14,14 +16,18 @@ public class ExecAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         final Project project = e.getProject();
-        final CodeitView codeitView = (CodeitView) e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        Component component = e.getData(PlatformDataKeys.CONTEXT_COMPONENT);
+        CodeitView codeitView = null;
+        if (component instanceof CodeitView) {
+            codeitView = (CodeitView) component;
+        }
 
         e.getPresentation().setEnabledAndVisible(codeitView != null && project != null);
     }
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-        final CodeitView codeitView = (CodeitView) anActionEvent.getRequiredData(PlatformDataKeys.CONTEXT_COMPONENT);
-        codeitView.gen(anActionEvent.getProject());
+    public void actionPerformed(@NotNull AnActionEvent e) {
+        final CodeitView codeitView = (CodeitView) e.getRequiredData(PlatformDataKeys.CONTEXT_COMPONENT);
+        codeitView.gen(e.getProject());
     }
 }
