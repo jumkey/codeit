@@ -28,22 +28,13 @@ public class QRCodeUtils {
             // 获取屏幕尺寸
             // 创建需要截取的矩形区域
             Rectangle screenRect = new Rectangle(0, 0, 0, 0);
-            final Map<Rectangle, BufferedImage> map = new HashMap<>();
             for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
                 final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
                 screenRect = screenRect.union(bounds);
-                // 截屏操作
-                BufferedImage bufImage = new Robot(gd).createScreenCapture(bounds);
-                map.put(bounds, bufImage);
             }
-            // 全尺寸图
-            final BufferedImage bufImage = new BufferedImage(screenRect.width, screenRect.height, BufferedImage.TYPE_INT_ARGB);
-            // Draw the original image
-            Graphics2D g = bufImage.createGraphics();
-            map.forEach((bounds, image) -> g.drawImage(image, null, bounds.x, bounds.y));
-            g.dispose();
-
-            return readQRCode(bufImage);
+            //创建多屏幕的全尺寸图片
+            BufferedImage screenCapture = new Robot().createScreenCapture(screenRect);
+            return readQRCode(screenRect,screenCapture);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +49,7 @@ public class QRCodeUtils {
      *
      * @return 二维码信息
      */
-    public static List<String> readQRCode(BufferedImage bufImage) throws NotFoundException {
+    public static List<String> readQRCode(Rectangle screenRect ,BufferedImage bufImage) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
 
         for (Result result : results) {
@@ -67,7 +58,7 @@ public class QRCodeUtils {
                 p.addPoint((int) resultPoint.getX(), (int) resultPoint.getY());
             }
             final Rectangle bounds = p.getBounds();
-            QRCodeSplashForm.show(bounds.x, bounds.y, bounds.width, bounds.height);
+            QRCodeSplashForm.show(bounds.x + screenRect.x, bounds.y + screenRect.y, bounds.width, bounds.height);
         }
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
