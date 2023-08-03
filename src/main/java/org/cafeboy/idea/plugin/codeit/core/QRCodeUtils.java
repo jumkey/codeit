@@ -5,7 +5,11 @@ import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
 import org.cafeboy.idea.plugin.codeit.ui.QRCodeSplashForm;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,21 +29,58 @@ public class QRCodeUtils {
     @SuppressWarnings("UndesirableClassUsage")
     public static List<String> captureScreenAndRead() {
         try {
-            // 获取屏幕尺寸
-            // 创建需要截取的矩形区域
-            Rectangle screenRect = new Rectangle(0, 0, 0, 0);
-            for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
-                final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
-                screenRect = screenRect.union(bounds);
-            }
+            int x = User32.INSTANCE.GetSystemMetrics(WinUser.SM_XVIRTUALSCREEN);
+            int y = User32.INSTANCE.GetSystemMetrics(WinUser.SM_YVIRTUALSCREEN);
+            int w = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CXVIRTUALSCREEN);
+            int h = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CYVIRTUALSCREEN);
+            Rectangle screenRect = new Rectangle(x, y, w, h);
             //创建多屏幕的全尺寸图片
-            BufferedImage screenCapture = new Robot().createScreenCapture(screenRect);
+            BufferedImage screenCapture = getPointRectImage(screenRect);
             return readQRCode(screenRect,screenCapture);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    public static BufferedImage getPrimaryScreenshotImage(){
+        WinDef.HWND hwnd = User32.INSTANCE.GetDesktopWindow();
+        CustomGDI32Util customGDI32Util = new CustomGDI32Util(hwnd);
+        return customGDI32Util.getScreenshot();
+    }
+    public static BufferedImage getFullVirtualScreenshotImage() {
+        int x = User32.INSTANCE.GetSystemMetrics(WinUser.SM_XVIRTUALSCREEN);
+        int y = User32.INSTANCE.GetSystemMetrics(WinUser.SM_YVIRTUALSCREEN);
+        int w = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CXVIRTUALSCREEN);
+        int h = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CYVIRTUALSCREEN);
+        CustomGDI32Util customGDI32Util = new CustomGDI32Util(new Rectangle(x,y,w,h));
+        return customGDI32Util.getScreenshot();
+    }
+
+    public static BufferedImage getPointRectImage( Rectangle rect) {
+        CustomGDI32Util customGDI32Util = new CustomGDI32Util(rect);
+        return customGDI32Util.getScreenshot();
+    }
+
+    /**
+     *
+     * TODO:此方法在JDK8和JDK11环境下执行结果不一致，故被弃用
+     *
+     * @return
+     * @throws AWTException
+     */
+    @Deprecated
+    @NotNull
+    private static BufferedImage getScreenshotImg() throws AWTException {
+        // 获取屏幕尺寸
+        // 创建需要截取的矩形区域
+        Rectangle screenRect = new Rectangle(0, 0, 0, 0);
+        for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+            final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
+            screenRect = screenRect.union(bounds);
+        }
+        return new Robot().createScreenCapture(screenRect);
     }
 
     private static final Map<DecodeHintType, Object> DECODE_MAP = ImmutableMap.of(DecodeHintType.TRY_HARDER, Boolean.TRUE);
