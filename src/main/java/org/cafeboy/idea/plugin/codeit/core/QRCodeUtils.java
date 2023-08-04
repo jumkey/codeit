@@ -40,10 +40,12 @@ public class QRCodeUtils {
             final BufferedImage bufImage = new BufferedImage(screenRect.width, screenRect.height, BufferedImage.TYPE_INT_ARGB);
             // Draw the original image
             Graphics2D g = bufImage.createGraphics();
-            map.forEach((bounds, image) -> g.drawImage(image, null, bounds.x, bounds.y));
+            int originOffsetX = screenRect.x;// 原点偏移x
+            int originOffsetY = screenRect.y;// 原点偏移y
+            map.forEach((bounds, image) -> g.drawImage(image, null, bounds.x - originOffsetX, bounds.y - originOffsetY));
             g.dispose();
 
-            return readQRCode(bufImage);
+            return readQRCode(bufImage, originOffsetX, originOffsetY);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +60,7 @@ public class QRCodeUtils {
      *
      * @return 二维码信息
      */
-    public static List<String> readQRCode(BufferedImage bufImage) throws NotFoundException {
+    public static List<String> readQRCode(BufferedImage bufImage, int originOffsetX, int originOffsetY) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
 
         for (Result result : results) {
@@ -67,7 +69,7 @@ public class QRCodeUtils {
                 p.addPoint((int) resultPoint.getX(), (int) resultPoint.getY());
             }
             final Rectangle bounds = p.getBounds();
-            QRCodeSplashForm.show(bounds.x, bounds.y, bounds.width, bounds.height);
+            QRCodeSplashForm.show(bounds.x + originOffsetX, bounds.y + originOffsetY, bounds.width, bounds.height);
         }
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
