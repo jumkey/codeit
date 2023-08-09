@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DesktopMouseHighlighter {
@@ -100,19 +101,43 @@ public class DesktopMouseHighlighter {
         @Override
         public void paint(Graphics g) {
             super.paint(g);
-            Graphics2D g2d = (Graphics2D) g;
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy of the Graphics context
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(Color.red);
             g2d.setStroke(new BasicStroke(2));
 
-            int x = (int) (mouseLocation.x - getLocation().getX() - highlightRadius);
-            int y = (int) (mouseLocation.y - getLocation().getY() - highlightRadius);
+            double scaleX = getScaleX();
+            double scaleY = getScaleY();
 
-            g2d.drawOval(x, y, highlightRadius * 2, highlightRadius * 2);
+            int x = (int) ((mouseLocation.x / scaleX) - highlightRadius);
+            int y = (int) ((mouseLocation.y / scaleY) - highlightRadius);
+
+            int ovalWidth = (int) (highlightRadius * 2);
+            int ovalHeight = (int) (highlightRadius * 2);
+
+            AffineTransform transform = new AffineTransform();
+            transform.scale(scaleX, scaleY);
+            g2d.setTransform(transform);
+
+            g2d.drawOval(x, y, ovalWidth, ovalHeight);
 
             g2d.setColor(new Color(128, 0, 128));  // Purple color
-            g2d.setFont(new Font("Arial", Font.PLAIN, 14));
-            g2d.drawString(mouseCoordinates, x, y - 10);
+            g2d.setFont(new Font("Arial", Font.PLAIN, (int) (14 * scaleX)));
+
+            int textX = x + 2;
+            int textY = y - 10;
+
+            g2d.drawString(mouseCoordinates, textX, textY);
+
+            g2d.dispose(); // Dispose of the Graphics context
+        }
+
+        private double getScaleX() {
+            return getContentPane().getWidth() / (double) getWidth();
+        }
+
+        private double getScaleY() {
+            return getContentPane().getHeight() / (double) getHeight();
         }
     }
 
