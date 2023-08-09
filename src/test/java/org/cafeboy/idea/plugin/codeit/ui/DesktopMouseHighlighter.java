@@ -7,6 +7,8 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DesktopMouseHighlighter {
@@ -64,6 +66,7 @@ public class DesktopMouseHighlighter {
 
         private int highlightRadius;
         private Point mouseLocation = new Point();
+        private String mouseCoordinates = "";
 
         public TransparentWindow(int radius) {
             this.highlightRadius = radius;
@@ -75,10 +78,23 @@ public class DesktopMouseHighlighter {
             setLayout(new BorderLayout());
             setAlwaysOnTop(true);
             setExtendedState(JFrame.MAXIMIZED_BOTH);  // Set to full-screen mode
+
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        System.exit(0);
+                    }
+                }
+            });
         }
 
         public void setMouseLocation(Point location) {
             this.mouseLocation = location;
+        }
+
+        public void setMouseCoordinates(String coordinates) {
+            this.mouseCoordinates = coordinates;
         }
 
         @Override
@@ -93,6 +109,10 @@ public class DesktopMouseHighlighter {
             int y = (int) (mouseLocation.y - getLocation().getY() - highlightRadius);
 
             g2d.drawOval(x, y, highlightRadius * 2, highlightRadius * 2);
+
+            g2d.setColor(new Color(128, 0, 128));  // Purple color
+            g2d.setFont(new Font("Arial", Font.PLAIN, 14));
+            g2d.drawString(mouseCoordinates, x, y - 10);
         }
     }
 
@@ -120,6 +140,7 @@ public class DesktopMouseHighlighter {
         public void nativeMouseMoved(NativeMouseEvent e) {
             SwingUtilities.invokeLater(() -> {
                 window.setMouseLocation(e.getPoint());
+                window.setMouseCoordinates("X: " + e.getX() + ", Y: " + e.getY());
                 window.repaint();
             });
         }
