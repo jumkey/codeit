@@ -29,11 +29,7 @@ public class QRCodeUtils {
     @SuppressWarnings("UndesirableClassUsage")
     public static List<String> captureScreenAndRead() {
         try {
-            int x = User32.INSTANCE.GetSystemMetrics(WinUser.SM_XVIRTUALSCREEN);
-            int y = User32.INSTANCE.GetSystemMetrics(WinUser.SM_YVIRTUALSCREEN);
-            int w = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CXVIRTUALSCREEN);
-            int h = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CYVIRTUALSCREEN);
-            Rectangle screenRect = new Rectangle(x, y, w, h);
+            Rectangle screenRect = getFullVirtualScreenRect();
             //创建多屏幕的全尺寸图片
             BufferedImage screenCapture = getPointRectImage(screenRect);
             return readQRCode(screenRect,screenCapture);
@@ -44,17 +40,24 @@ public class QRCodeUtils {
         return Collections.emptyList();
     }
 
+    @NotNull
+    public static Rectangle getFullVirtualScreenRect() {
+        int x = User32.INSTANCE.GetSystemMetrics(WinUser.SM_XVIRTUALSCREEN);
+        int y = User32.INSTANCE.GetSystemMetrics(WinUser.SM_YVIRTUALSCREEN);
+        int w = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CXVIRTUALSCREEN);
+        int h = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CYVIRTUALSCREEN);
+        Rectangle screenRect = new Rectangle(x, y, w, h);
+        return screenRect;
+    }
+
     public static BufferedImage getPrimaryScreenshotImage(){
         WinDef.HWND hwnd = User32.INSTANCE.GetDesktopWindow();
         CustomGDI32Util customGDI32Util = new CustomGDI32Util(hwnd);
         return customGDI32Util.getScreenshot();
     }
     public static BufferedImage getFullVirtualScreenshotImage() {
-        int x = User32.INSTANCE.GetSystemMetrics(WinUser.SM_XVIRTUALSCREEN);
-        int y = User32.INSTANCE.GetSystemMetrics(WinUser.SM_YVIRTUALSCREEN);
-        int w = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CXVIRTUALSCREEN);
-        int h = User32.INSTANCE.GetSystemMetrics(WinUser.SM_CYVIRTUALSCREEN);
-        CustomGDI32Util customGDI32Util = new CustomGDI32Util(new Rectangle(x,y,w,h));
+
+        CustomGDI32Util customGDI32Util = new CustomGDI32Util(getFullVirtualScreenRect());
         return customGDI32Util.getScreenshot();
     }
 
