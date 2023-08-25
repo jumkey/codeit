@@ -32,7 +32,7 @@ public class QRCodeUtils {
             Rectangle screenRect = getFullVirtualScreenRect();
             //创建多屏幕的全尺寸图片
             BufferedImage screenCapture = getPointRectImage(screenRect);
-            return readQRCode(screenRect,screenCapture);
+            return readQRCode(screenCapture);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class QRCodeUtils {
      *
      * @return 二维码信息
      */
-    public static List<String> readQRCode(Rectangle screenRect ,BufferedImage bufImage) throws NotFoundException {
+    public static List<String> readQRCode(BufferedImage bufImage) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
 
         for (Result result : results) {
@@ -102,7 +102,7 @@ public class QRCodeUtils {
                 p.addPoint((int) resultPoint.getX(), (int) resultPoint.getY());
             }
             final Rectangle bounds = p.getBounds();
-            QRCodeSplashForm.show(bounds.x + screenRect.x, bounds.y + screenRect.y, bounds.width, bounds.height);
+            QRCodeSplashForm.show(bounds.x, bounds.y , bounds.width, bounds.height);
         }
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
