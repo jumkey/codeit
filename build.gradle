@@ -26,13 +26,13 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2022.2'
+//    version = '2022.2'
 //    version = '2022.3.3'
 //    version = '2021.2.4'
-//    version = '2023.2.1'
+    version = '2023.2.1'
 }
 patchPluginXml {
-    sinceBuild = '222'
+    sinceBuild = '203'
     untilBuild = ''
     pluginDescription = ExtensionsKt.markdownToHTML("""### Description
 A plug-in that generates a two-dimensional barcode of a specific text.
