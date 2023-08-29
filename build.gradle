@@ -2,8 +2,8 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.14.2'
-    id 'org.jetbrains.changelog' version '2.0.0'
+    id 'org.jetbrains.intellij' version '1.15.0'
+    id 'org.jetbrains.changelog' version '2.1.2'
     id 'java'
 }
 
@@ -26,12 +26,13 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.2.4'
+//    version = '2021.2.4'
+    version = '2023.2.1'
 }
 patchPluginXml {
     sinceBuild = '203'
     untilBuild = ''
-    pluginDescription = ExtensionsKt.markdownToHTML("""## Description
+    pluginDescription = ExtensionsKt.markdownToHTML(""" Description
 A plug-in that generates a two-dimensional barcode of a specific text.
 ## Features
 - Create QR code.
@@ -39,8 +40,8 @@ A plug-in that generates a two-dimensional barcode of a specific text.
 - Parse QR code picture into text.
 ## How to use
 - Right-click the selected text to generate a QR code
-- Open Codeit tool window to discover more features
-""")
+- Open Codeit tool window to discover more features"""
+,"\n")
     changeNotes = changelog.renderItem(
             changelog
                     .getLatest()
@@ -54,4 +55,14 @@ publishPlugin {
 }
 test {
     useJUnitPlatform()
+}
+
+compileJava{
+    options.compilerArgs.add("--add-exports=java.desktop/sun.awt=ALL-UNNAMED")
+    options.compilerArgs.add("--add-exports=java.desktop/java.awt.peer=ALL-UNNAMED")
+}
+
+compileTestJava{
+    options.compilerArgs.add( "--add-exports=java.desktop/sun.awt=ALL-UNNAMED")
+    options.compilerArgs.add("--add-exports=java.desktop/java.awt.peer=ALL-UNNAMED")
 }
