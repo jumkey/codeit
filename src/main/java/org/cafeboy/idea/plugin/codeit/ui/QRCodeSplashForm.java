@@ -2,11 +2,13 @@ package org.cafeboy.idea.plugin.codeit.ui;
 
 import com.google.common.base.Stopwatch;
 import com.intellij.ui.JBColor;
+import org.cafeboy.idea.plugin.codeit.core.QRCodeUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,24 +30,40 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
     private int y;
     private int w;
     private int h;
-    final Color transparent = fromArgb(0, JBColor.BLACK);
-    final Color red = JBColor.RED;
-    Color pen;
-    Color brush;
+
+    private final double scaleX;
+    private final double scaleY;
+
+    private Color pen;
+    private Color brush;
+
+    private boolean visible = true;
 
     public QRCodeSplashForm() {
         this.setName("QRCodeSplashForm");
 
-        this.setBackground(transparent);
+        this.setBackground(new JBColor(()->new Color(0,0,0,0)));
+        this.setVisible(true);
+
+        Rectangle fullRect = QRCodeUtils.getFullVirtualScreenRect();
+
+        AffineTransform defaultTransform = getGraphicsConfiguration().getDefaultTransform();
+        scaleX = defaultTransform.getScaleX();
+        scaleY = defaultTransform.getScaleY();
+        setLocation(new Point((int)(fullRect.x/scaleX),(int)(fullRect.y/scaleY)));
+        setSize(new Dimension(fullRect.width, fullRect.height));
+
+        setLayout(new BorderLayout());
+        setAlwaysOnTop(true);
+
+
         flashStep = 0;
         x = 0;
         y = 0;
-        w = this.getWidth();
-        h = this.getHeight();
+        w = 0;
+        h = 0;
         sw = Stopwatch.createUnstarted();
         timer = new Timer((int) (ANIMATION_TIME * 1000 / ANIMATION_STEPS), this);
-        pen = red;
-        brush = fromArgb(30, red);
     }
 
     public void start() {
@@ -73,28 +91,33 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
             w = (int) (targetRect.getWidth() * percent + 1000 * (1 - percent));
             h = (int) (targetRect.getHeight() * percent + 1000 * (1 - percent));
 
-            pen = fromArgb((int) (255 * percent), red);
-            brush = fromArgb((int) (30 * percent), red);
-            this.setLocation(new Point(x, y));
-            this.setSize(w, h);
-            this.setVisible(true);
+            pen = fromArgb((int) (255 * percent), Color.RED);
+            brush = fromArgb((int) (200 * percent), Color.BLACK);
         } else {
             switch (flashStep) {
                 case 0:
                     timer.setDelay(100);
-                    this.setVisible(false);
+                    // this.setVisible(false);
+                    visible = false;
+                    repaint();
                     break;
                 case 1:
                     timer.setDelay(50);
-                    this.setVisible(true);
+                    // this.setVisible(true);
+                    visible = true;
+                    repaint();
                     break;
                 case 2:
                 case 4:
-                    this.setVisible(false);
+                    // this.setVisible(false);
+                    visible = false;
+                    repaint();
                     break;
                 case 3:
                 case 5:
-                    this.setVisible(true);
+                    // this.setVisible(true);
+                    visible = true;
+                    repaint();
                     break;
                 default:
                     sw.stop();
@@ -109,14 +132,21 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
 
     @Override
     public void paint(Graphics g) {
-        final int thickness = 4;
-        Graphics2D gg = (Graphics2D) g;
-        gg.clearRect(0, 0, getSize().width, getSize().height);
-        gg.setColor(brush);
-        gg.fillRect(0, 0, getSize().width, getSize().height);
-        gg.setColor(pen);
-        gg.setStroke(new BasicStroke(thickness));
-        gg.drawRect(thickness / 2, thickness / 2, w - thickness, h - thickness);
+        super.paint(g);
+        if (visible) {
+            final int thickness = 4;
+            Graphics2D g2d = (Graphics2D) g.create(); // Create a copy of the Graphics context
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.scale(1/scaleX,1/scaleY);
+
+            g2d.setColor(pen);
+            g2d.setStroke(new BasicStroke(thickness));
+            g2d.drawRect(x, y, w, h);
+
+            g2d.setColor(brush);
+            g2d.fillRect(x+ thickness/2,y+ (thickness/2),w-thickness,h -thickness);
+            g2d.dispose();
+        }
     }
 
     public static QRCodeSplashForm show(int x, int y, int w, int h) {

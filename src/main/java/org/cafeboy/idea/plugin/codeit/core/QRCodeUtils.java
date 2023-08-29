@@ -6,12 +6,16 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 import org.cafeboy.idea.plugin.codeit.ui.QRCodeSplashForm;
+import org.jetbrains.annotations.NotNull;
+import sun.awt.ComponentFactory;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
+import java.awt.image.*;
+import java.awt.peer.RobotPeer;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,35 +26,78 @@ import java.util.stream.Collectors;
  */
 public class QRCodeUtils {
 
-    @SuppressWarnings("UndesirableClassUsage")
+    private static final GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
     public static List<String> captureScreenAndRead() {
         try {
-            // 获取屏幕尺寸
-            // 创建需要截取的矩形区域
-            Rectangle screenRect = new Rectangle(0, 0, 0, 0);
-            final Map<Rectangle, BufferedImage> map = new HashMap<>();
-            for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
-                final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
-                screenRect = screenRect.union(bounds);
-                // 截屏操作
-                BufferedImage bufImage = new Robot(gd).createScreenCapture(bounds);
-                map.put(bounds, bufImage);
-            }
-            // 全尺寸图
-            final BufferedImage bufImage = new BufferedImage(screenRect.width, screenRect.height, BufferedImage.TYPE_INT_ARGB);
-            // Draw the original image
-            Graphics2D g = bufImage.createGraphics();
-            int originOffsetX = screenRect.x;// 原点偏移x
-            int originOffsetY = screenRect.y;// 原点偏移y
-            map.forEach((bounds, image) -> g.drawImage(image, null, bounds.x - originOffsetX, bounds.y - originOffsetY));
-            g.dispose();
-
-            return readQRCode(bufImage, originOffsetX, originOffsetY);
+            Rectangle screenRect = getFullVirtualScreenRect();
+            //创建多屏幕的全尺寸图片
+            BufferedImage screenCapture = screenshot(screenRect);
+            return readQRCode(screenCapture);
         } catch (NotFoundException ignored) {
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    @NotNull
+    public static Rectangle getFullVirtualScreenRect() {
+        GraphicsDevice[] screenDevices = localGraphicsEnvironment.getScreenDevices();
+        Rectangle allBounds = new Rectangle();
+        for (int i = 0; i < screenDevices.length; i++) {
+            GraphicsDevice screenDevice = screenDevices[i];
+            GraphicsConfiguration gc = screenDevice.getDefaultConfiguration();
+            int width = screenDevice.getDisplayMode().getWidth();
+            int height = screenDevice.getDisplayMode().getHeight();
+            // 获取 GraphicsConfiguration 的 Bounds，它包含更高分辨率信息
+            Rectangle screenBounds = gc.getBounds();
+            Rectangle rectangle = new Rectangle(screenBounds.x, screenBounds.y, width, height);
+            allBounds.add(rectangle);
+        }
+        return allBounds;
+    }
+
+    public static BufferedImage screenshot( Rectangle allBounds) throws AWTException {
+        RobotPeer robotPeer = ((ComponentFactory) Toolkit.getDefaultToolkit()).createRobot(localGraphicsEnvironment.getDefaultScreenDevice());
+
+        int[] pixels = robotPeer.getRGBPixels(allBounds);
+        DirectColorModel screenCapCM = new DirectColorModel(24,
+                /* red mask */ 0x00FF0000,
+                /* green mask */ 0x0000FF00,
+                /* blue mask */ 0x000000FF);
+        DataBufferInt buffer = new DataBufferInt(pixels, pixels.length);
+        int[] bandmasks = new int[3]    ;
+        bandmasks[0] = screenCapCM.getRedMask();
+        bandmasks[1] = screenCapCM.getGreenMask();
+        bandmasks[2] = screenCapCM.getBlueMask();
+
+        WritableRaster raster = Raster.createPackedRaster(buffer, allBounds.width,
+                allBounds.height, allBounds.width, bandmasks, null);
+        BufferedImage highResolutionImage = new BufferedImage(screenCapCM,raster,false,null);
+
+        return     highResolutionImage;
+    }
+
+
+    /**
+     *
+     * TODO:此方法在JDK8和JDK11环境下执行结果不一致，故被弃用
+     *
+     * @return
+     * @throws AWTException
+     */
+    @Deprecated
+    @NotNull
+    private static BufferedImage getScreenshotImg() throws AWTException {
+        // 获取屏幕尺寸
+        // 创建需要截取的矩形区域
+        Rectangle screenRect = new Rectangle(0, 0, 0, 0);
+        for (GraphicsDevice gd : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
+            final Rectangle bounds = gd.getDefaultConfiguration().getBounds();
+            screenRect = screenRect.union(bounds);
+        }
+        return new Robot().createScreenCapture(screenRect);
     }
 
     private static final Map<DecodeHintType, Object> DECODE_MAP = ImmutableMap.of(DecodeHintType.TRY_HARDER, Boolean.TRUE);
@@ -60,7 +107,7 @@ public class QRCodeUtils {
      *
      * @return 二维码信息
      */
-    public static List<String> readQRCode(BufferedImage bufImage, int originOffsetX, int originOffsetY) throws NotFoundException {
+    public static List<String> readQRCode(BufferedImage bufImage) throws NotFoundException {
         final Result[] results = new QRCodeMultiReader().decodeMultiple(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufImage))), DECODE_MAP);
 
         for (Result result : results) {
@@ -69,7 +116,7 @@ public class QRCodeUtils {
                 p.addPoint((int) resultPoint.getX(), (int) resultPoint.getY());
             }
             final Rectangle bounds = p.getBounds();
-            QRCodeSplashForm.show(bounds.x + originOffsetX, bounds.y + originOffsetY, bounds.width, bounds.height);
+            QRCodeSplashForm.show(bounds.x, bounds.y , bounds.width, bounds.height);
         }
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
