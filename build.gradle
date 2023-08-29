@@ -9,8 +9,8 @@ plugins {
 
 group 'org.cafeboy.idea.plugin'
 version '1.0.5'
-sourceCompatibility = 11
-targetCompatibility = 11
+//sourceCompatibility = 11
+//targetCompatibility = 11
 
 repositories {
     mavenLocal()
@@ -26,13 +26,15 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
+    version = '2022.2'
+//    version = '2022.3.3'
 //    version = '2021.2.4'
-    version = '2023.2.1'
+//    version = '2023.2.1'
 }
 patchPluginXml {
-    sinceBuild = '203'
+    sinceBuild = '222'
     untilBuild = ''
-    pluginDescription = ExtensionsKt.markdownToHTML(""" Description
+    pluginDescription = ExtensionsKt.markdownToHTML("""### Description
 A plug-in that generates a two-dimensional barcode of a specific text.
 ## Features
 - Create QR code.
@@ -58,6 +60,8 @@ test {
 }
 
 compileJava{
+    sourceCompatibility = 11
+    targetCompatibility = 11
     options.compilerArgs.add("--add-exports=java.desktop/sun.awt=ALL-UNNAMED")
     options.compilerArgs.add("--add-exports=java.desktop/java.awt.peer=ALL-UNNAMED")
 }
