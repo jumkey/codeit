@@ -5,6 +5,7 @@ import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.intellij.util.lang.JavaVersion;
 import org.cafeboy.idea.plugin.codeit.ui.QRCodeSplashForm;
 import org.jetbrains.annotations.NotNull;
 import sun.awt.ComponentFactory;
@@ -12,6 +13,9 @@ import sun.awt.ComponentFactory;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.peer.RobotPeer;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +32,13 @@ public class QRCodeUtils {
 
     private static final GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
+    private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
+    private static final Toolkit toolkit = Toolkit.getDefaultToolkit();
+
     public static List<String> captureScreenAndRead() {
         try {
             Rectangle screenRect = getFullVirtualScreenRect();
-            //创建多屏幕的全尺寸图片
+            // 创建多屏幕的全尺寸图片
             BufferedImage screenCapture = screenshot(screenRect);
             return readQRCode(screenCapture);
         } catch (NotFoundException ignored) {
@@ -58,8 +65,22 @@ public class QRCodeUtils {
         return allBounds;
     }
 
-    public static BufferedImage screenshot( Rectangle allBounds) throws AWTException {
-        RobotPeer robotPeer = ((ComponentFactory) Toolkit.getDefaultToolkit()).createRobot(localGraphicsEnvironment.getDefaultScreenDevice());
+    public static BufferedImage screenshot(Rectangle allBounds) {
+        final RobotPeer robotPeer;
+        final MethodType methodType;
+        try {
+            if (JavaVersion.current().feature < 17) {
+                methodType = MethodType.methodType(RobotPeer.class, Robot.class, GraphicsDevice.class);
+                MethodHandle methodHandle = lookup.findVirtual(ComponentFactory.class, "createRobot", methodType).bindTo(toolkit);
+                robotPeer = (RobotPeer) methodHandle.invokeExact((Robot)null, localGraphicsEnvironment.getDefaultScreenDevice());
+            } else {
+                methodType = MethodType.methodType(RobotPeer.class, GraphicsDevice.class);
+                MethodHandle methodHandle = lookup.findVirtual(ComponentFactory.class, "createRobot", methodType).bindTo(toolkit);
+                robotPeer = (RobotPeer) methodHandle.invokeExact(localGraphicsEnvironment.getDefaultScreenDevice());
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
 
         int[] pixels = robotPeer.getRGBPixels(allBounds);
         DirectColorModel screenCapCM = new DirectColorModel(24,
@@ -67,22 +88,21 @@ public class QRCodeUtils {
                 /* green mask */ 0x0000FF00,
                 /* blue mask */ 0x000000FF);
         DataBufferInt buffer = new DataBufferInt(pixels, pixels.length);
-        int[] bandmasks = new int[3]    ;
+        int[] bandmasks = new int[3];
         bandmasks[0] = screenCapCM.getRedMask();
         bandmasks[1] = screenCapCM.getGreenMask();
         bandmasks[2] = screenCapCM.getBlueMask();
 
         WritableRaster raster = Raster.createPackedRaster(buffer, allBounds.width,
                 allBounds.height, allBounds.width, bandmasks, null);
-        BufferedImage highResolutionImage = new BufferedImage(screenCapCM,raster,false,null);
+        BufferedImage highResolutionImage = new BufferedImage(screenCapCM, raster, false, null);
 
-        return     highResolutionImage;
+        return highResolutionImage;
     }
 
 
     /**
-     *
-     * TODO:此方法在JDK8和JDK11环境下执行结果不一致，故被弃用
+     * TODO: 此方法在 JDK8 和 JDK11 环境下执行结果不一致，故被弃用
      *
      * @return
      * @throws AWTException
@@ -116,7 +136,7 @@ public class QRCodeUtils {
                 p.addPoint((int) resultPoint.getX(), (int) resultPoint.getY());
             }
             final Rectangle bounds = p.getBounds();
-            QRCodeSplashForm.show(bounds.x, bounds.y , bounds.width, bounds.height);
+            QRCodeSplashForm.show(bounds.x, bounds.y, bounds.width, bounds.height);
         }
         return Arrays.stream(results).map(Result::getText).collect(Collectors.toList());
     }
