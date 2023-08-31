@@ -5,6 +5,7 @@ import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.util.lang.JavaVersion;
 import org.cafeboy.idea.plugin.codeit.ui.QRCodeSplashForm;
 import org.jetbrains.annotations.NotNull;
@@ -55,12 +56,13 @@ public class QRCodeUtils {
         for (int i = 0; i < screenDevices.length; i++) {
             GraphicsDevice screenDevice = screenDevices[i];
             GraphicsConfiguration gc = screenDevice.getDefaultConfiguration();
-            int width = screenDevice.getDisplayMode().getWidth();
-            int height = screenDevice.getDisplayMode().getHeight();
             // 获取 GraphicsConfiguration 的 Bounds，它包含更高分辨率信息
             Rectangle screenBounds = gc.getBounds();
-            Rectangle rectangle = new Rectangle(screenBounds.x, screenBounds.y, width, height);
-            allBounds.add(rectangle);
+            if (SystemInfo.isWindows) {
+                screenBounds.width = screenDevice.getDisplayMode().getWidth();
+                screenBounds.height = screenDevice.getDisplayMode().getHeight();
+            }
+            allBounds.add(screenBounds);
         }
         return allBounds;
     }
@@ -72,7 +74,7 @@ public class QRCodeUtils {
             if (JavaVersion.current().feature < 17) {
                 methodType = MethodType.methodType(RobotPeer.class, Robot.class, GraphicsDevice.class);
                 MethodHandle methodHandle = lookup.findVirtual(ComponentFactory.class, "createRobot", methodType).bindTo(toolkit);
-                robotPeer = (RobotPeer) methodHandle.invokeExact((Robot)null, localGraphicsEnvironment.getDefaultScreenDevice());
+                robotPeer = (RobotPeer) methodHandle.invokeExact((Robot) null, localGraphicsEnvironment.getDefaultScreenDevice());
             } else {
                 methodType = MethodType.methodType(RobotPeer.class, GraphicsDevice.class);
                 MethodHandle methodHandle = lookup.findVirtual(ComponentFactory.class, "createRobot", methodType).bindTo(toolkit);
