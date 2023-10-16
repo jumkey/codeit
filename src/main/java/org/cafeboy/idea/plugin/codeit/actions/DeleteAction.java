@@ -18,7 +18,7 @@ public class DeleteAction extends AnAction {
     public DeleteAction(CodeitView codeitView) {
         super(I18nSupport.i18n_str("action.delete.text"), I18nSupport.i18n_str("action.delete.description"), AllIcons.Actions.Cancel);
         this.codeitView = codeitView;
-        setShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control D")));
+        registerCustomShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control D")), codeitView);
     }
 
     @Override

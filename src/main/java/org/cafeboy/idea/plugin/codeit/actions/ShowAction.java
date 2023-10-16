@@ -18,7 +18,7 @@ public class ShowAction extends AnAction {
     public ShowAction(CodeitView codeitView) {
         super(I18nSupport.i18n_str("action.show.text"), I18nSupport.i18n_str("action.show.description"), AllIcons.Actions.ShowWriteAccess);
         this.codeitView = codeitView;
-        setShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control R")));
+        registerCustomShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control R")), codeitView);
     }
 
     @Override

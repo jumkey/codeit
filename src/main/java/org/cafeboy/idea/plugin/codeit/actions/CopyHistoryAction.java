@@ -20,7 +20,7 @@ public class CopyHistoryAction extends AnAction {
     public CopyHistoryAction(CodeitView codeitView) {
         super(I18nSupport.i18n_str("action.copy.text"), I18nSupport.i18n_str("action.copy.description"), AllIcons.Actions.Copy);
         this.codeitView = codeitView;
-        setShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control C")));
+        registerCustomShortcutSet(new CustomShortcutSet(KeyStroke.getKeyStroke("control C")), codeitView);
     }
 
     @Override
