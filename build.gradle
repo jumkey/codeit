@@ -36,14 +36,13 @@ patchPluginXml {
     untilBuild = ''
     pluginDescription = ExtensionsKt.markdownToHTML("""### Description
 A plug-in that generates a two-dimensional barcode of a specific text.
-## Features
+### Features
 - Create QR code.
 - Read QR code from the screen.
 - Parse QR code picture into text.
-## How to use
+### How to use
 - Right-click the selected text to generate a QR code
-- Open Codeit tool window to discover more features"""
-,"\n")
+- Open Codeit tool window to discover more features""", "\n")
     changeNotes = changelog.renderItem(
             changelog
                     .getLatest()
