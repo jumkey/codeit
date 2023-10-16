@@ -42,7 +42,7 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
     public QRCodeSplashForm() {
         this.setName("QRCodeSplashForm");
 
-        this.setBackground(new JBColor(()->new Color(0,0,0,0)));
+        this.setBackground(new Color(0,0,0,0));
         this.setVisible(true);
 
         Rectangle fullRect = QRCodeUtils.getFullVirtualScreenRect();
@@ -99,25 +99,21 @@ public class QRCodeSplashForm extends JWindow implements ActionListener {
                     timer.setDelay(100);
                     // this.setVisible(false);
                     visible = false;
-                    repaint();
                     break;
                 case 1:
                     timer.setDelay(50);
                     // this.setVisible(true);
                     visible = true;
-                    repaint();
                     break;
                 case 2:
                 case 4:
                     // this.setVisible(false);
                     visible = false;
-                    repaint();
                     break;
                 case 3:
                 case 5:
                     // this.setVisible(true);
                     visible = true;
-                    repaint();
                     break;
                 default:
                     sw.stop();
